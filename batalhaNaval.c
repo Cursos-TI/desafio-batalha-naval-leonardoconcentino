@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 
 int board [10][10] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -24,6 +25,7 @@ void toLowerCase(char *str) {
 
 void printBoard(){
 
+    printf("\n");
     printf("   A B C D E F G H I J\n");
 
     for (int i = 0; i < 10; i++)
@@ -39,7 +41,7 @@ void printBoard(){
         }
         printf("\n");
     }
-    
+    printf("\n");
 
 }
 
@@ -87,7 +89,15 @@ int transformColumn(char column){
 int validate(int size, char direction [10], int column1, int line1, int column2, int line2){
 
     if(size == 2){
-    
+        
+        if(line1 > line2 || line2 > line1)
+            if(abs(line1 - line2) != 1)
+                return 0;
+
+        if(column1 > column2 || column2 > column1)
+            if(abs(column1 - column2) != 1)
+                return 0;
+
         if (board[line1][column1] != 0){     
             return 0;
         }
@@ -95,12 +105,16 @@ int validate(int size, char direction [10], int column1, int line1, int column2,
         if (board[line2][column2] != 0){
             return 0;
         }
-        
+
         return 1;
     }  
     else{
-
+        
         if (strcmp(direction, "vertical") == 0){
+
+            if(abs(line1 - line2) != size-1)
+                return 0;
+
             for (int i = 0; i < size; i++){
                 if (board[line1+i][column1] != 0)
                     return 0;
@@ -108,12 +122,20 @@ int validate(int size, char direction [10], int column1, int line1, int column2,
         }
         else 
             if (strcmp(direction, "horizontal") == 0){
+                if(abs(column1 - column2) != size-1)
+                    return 0;
+
                 for (int i = 0; i < size; i++){
                     if (board[line1][column1+i] != 0)
                     return 0;
                 }
             }
             else{
+                if(abs(line1 - line2) != size-1)
+                    return 0;
+                if(abs(column1 - column2) != size-1)
+                    return 0;
+
                 for (int i = 0; i < size; i++){
                     if (board[line1+i][column1+i] != 0)
                     return 0;
@@ -133,6 +155,18 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
     line2--;
     int valid;
 
+    if (line1 > line2){
+        int j = line2;
+        line2 = line1;
+        line1 = j;
+    }
+
+    if (numColumn1 > numColumn2){
+        int j = numColumn2;
+        numColumn2 = numColumn1;
+        numColumn1 = j;
+    }
+
     switch (size)
     {
     case 2:
@@ -144,6 +178,7 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
 
         board [line1][numColumn1] = size;
         board [line2][numColumn2] = size;
+        printBoard();
         return 1;
 
     case 3:
@@ -175,7 +210,7 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
                         board [line1+i][numColumn1+i] = size;
                     }
                 }
-        
+        printBoard();
         return 1;
     
     case 4:
@@ -207,7 +242,7 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
                         board [line1+i][numColumn1+i] = size;
                     }
                 }
-        
+        printBoard();
         return 1;
 
     case 5:
@@ -239,7 +274,7 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
                         board [line1+i][numColumn1+i] = size;
                     }
                 }
-        
+        printBoard();
         return 1;
     
     default:
@@ -309,7 +344,7 @@ void collectShips(){
             break;
         }
         else{
-            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+            printf("\nInvalid coordinates to this ship. Please, insert data again.\n");
         }
 
     } while (1);
@@ -322,12 +357,12 @@ void collectShips(){
 
         while (1){
             printf("Direction (Horizontal, Vertical or Diagonal): ");
-            scanf(" %19[^\n]", direction); // Permite entrada com espaços e limita o buffer
+            scanf(" %11[^\n]", direction); // Permite entrada com espaços e limita o buffer
 
             toLowerCase(direction); // Converte para minúsculas
 
-            if (strcmp(direction, "vertical") != 0 || 
-                strcmp(direction, "horizontal") != 0 || 
+            if (strcmp(direction, "vertical") != 0 && 
+                strcmp(direction, "horizontal") != 0 && 
                 strcmp(direction, "diagonal") != 0){
                 printf("\nInvalid direction. Please, type 'vertical', 'horizontal' or 'diagonal'.\n");
             }
@@ -384,7 +419,7 @@ void collectShips(){
             break;
         }
         else{
-            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+            printf("\nInvalid coordinates to this ship. Please, insert data again.\n");
         }
 
     } while (1);
@@ -402,8 +437,8 @@ void collectShips(){
 
             toLowerCase(direction); // Converte para minúsculas
 
-            if (strcmp(direction, "vertical") != 0 || 
-                strcmp(direction, "horizontal") != 0 || 
+            if (strcmp(direction, "vertical") != 0 && 
+                strcmp(direction, "horizontal") != 0 && 
                 strcmp(direction, "diagonal") != 0){
                 printf("\nInvalid direction. Please, type 'vertical', 'horizontal' or 'diagonal'.\n");
             }
@@ -460,7 +495,7 @@ void collectShips(){
             break;
         }
         else{
-            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+            printf("\nInvalid coordinates to this ship. Please, insert data again.\n");
         }
 
     } while (1);
@@ -478,8 +513,8 @@ void collectShips(){
 
             toLowerCase(direction); // Converte para minúsculas
 
-            if (strcmp(direction, "vertical") != 0 || 
-                strcmp(direction, "horizontal") != 0 || 
+            if (strcmp(direction, "vertical") != 0 && 
+                strcmp(direction, "horizontal") != 0 && 
                 strcmp(direction, "diagonal") != 0){
                 printf("\nInvalid direction. Please, type 'vertical', 'horizontal' or 'diagonal'.\n");
             }
@@ -536,7 +571,7 @@ void collectShips(){
             break;
         }
         else{
-            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+            printf("\nInvalid coordinates to this ship. Please, insert data again.\n");
         }
 
     } while (1);

@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 
 int board [10][10] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -13,6 +14,13 @@ int board [10][10] = {
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
+
+void toLowerCase(char *str) {
+    while (*str) {
+        *str = tolower(*str);
+        str++;
+    }
+}
 
 void printBoard(){
 
@@ -123,23 +131,27 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
     int numColumn2 = transformColumn(column2);
     line1--;
     line2--;
+    int valid;
 
     switch (size)
     {
     case 2:
         
-        int boolean = validate(size, direction, numColumn1, line1, numColumn2, line2);
-        if (boolean == 0)
-            break;
+        valid = validate(size, direction, numColumn1, line1, numColumn2, line2);
+        if (valid == 0)
+            return 0;
 
 
         board [line1][numColumn1] = size;
         board [line2][numColumn2] = size;
-        
-        break;
+        return 1;
 
     case 3:
-        
+
+        valid = validate(size, direction, numColumn1, line1, numColumn2, line2);
+        if (valid == 0)
+            return 0;
+
         if (strcmp(direction, "vertical") == 0)
         {
             for (int i = 0; i < size; i++)
@@ -164,10 +176,14 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
                     }
                 }
         
-        break;
+        return 1;
     
     case 4:
         
+        valid = validate(size, direction, numColumn1, line1, numColumn2, line2);
+        if (valid == 0)
+            return 0;
+
         if (strcmp(direction, "vertical") == 0)
         {
             for (int i = 0; i < size; i++)
@@ -192,10 +208,14 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
                     }
                 }
         
-        break;
+        return 1;
 
     case 5:
-        
+
+        valid = validate(size, direction, numColumn1, line1, numColumn2, line2);
+        if (valid == 0)
+            return 0;
+
         if (strcmp(direction, "vertical") == 0)
         {
             for (int i = 0; i < size; i++)
@@ -220,7 +240,7 @@ int positionShips(int size, char direction [10], char column1, int line1, char c
                     }
                 }
         
-        break;
+        return 1;
     
     default:
         break;
@@ -244,114 +264,282 @@ void collectShips(){
         while (1){
             printf("\nFirst coordinate:\n");
             printf("Column (A - J): ");
-            scanf("%c", &column1);
-            getchar();
-            if (column1 >= 'a' && column1 <= 'i'){
-                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H or I.\n");
+            scanf(" %c", &column1);
+            if ((column1 < 'A' || column1 > 'J') && (column1 < 'a' || column1 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line1);
+
+            if (line1 < 1 || line1 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
+        
+        while (1){
+            printf("\nSecond coordinate:\n");
+            printf("Column (A - J): ");
+            scanf(" %c", &column2);
+            if ((column2 < 'A' || column2 > 'J') && (column2 < 'a' || column2 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line2);
+
+            if (line2 < 1 || line2 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
+
+        if (positionShips(2, direction, column1, line1, column2, line2) == 1){
+            break;
+        }
+        else{
+            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+        }
+
+    } while (1);
+
+    do
+    {
+        getchar();
+        printf("\n");
+        printf("Where would you like to position your Submarine (3 squares)?\n");
+
+        while (1){
+            printf("Direction (Horizontal, Vertical or Diagonal): ");
+            scanf(" %19[^\n]", direction); // Permite entrada com espaços e limita o buffer
+
+            toLowerCase(direction); // Converte para minúsculas
+
+            if (strcmp(direction, "vertical") != 0 || 
+                strcmp(direction, "horizontal") != 0 || 
+                strcmp(direction, "diagonal") != 0){
+                printf("\nInvalid direction. Please, type 'vertical', 'horizontal' or 'diagonal'.\n");
             }
             else
                 break;
         }
         
 
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line1);
-        getchar();
+        while (1){
+            printf("\nFirst coordinate:\n");
+            printf("Column (A - J): ");
+            scanf(" %c", &column1);
+            if ((column1 < 'A' || column1 > 'J') && (column1 < 'a' || column1 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line1);
 
-        printf("\nSecond coordinate:\n");
-        printf("Column (A - J): ");
-        scanf("%c", &column2);
-        getchar();
+            if (line1 < 1 || line1 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
+        
+        while (1){
+            printf("\nSecond coordinate:\n");
+            printf("Column (A - J): ");
+            scanf(" %c", &column2);
+            if ((column2 < 'A' || column2 > 'J') && (column2 < 'a' || column2 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line2);
 
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line2);
+            if (line2 < 1 || line2 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
 
-        positionShips(2, direction, column1, line1, column2, line2);
+        if (positionShips(3, direction, column1, line1, column2, line2) == 1){
+            break;
+        }
+        else{
+            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+        }
+
     } while (1);
-    
-    
-    
-    getchar();
-    printf("\n");
-    printf("Where would you like to position your Submarine (3 squares)?\n");
 
-        printf("Direction (Horizontal, Vertical or Diagonal): ");
-        scanf("%s", direction);
+
+    do
+    {
         getchar();
+        printf("\n");
+        printf("Where would you like to position your Battleship (4 squares)?\n");
 
-        printf("\nFirst coordinate:\n");
-        printf("Column (A - J): ");
-        scanf("%c", &column1);
+        while (1){
+            printf("Direction (Horizontal, Vertical or Diagonal): ");
+            scanf(" %19[^\n]", direction); // Permite entrada com espaços e limita o buffer
+
+            toLowerCase(direction); // Converte para minúsculas
+
+            if (strcmp(direction, "vertical") != 0 || 
+                strcmp(direction, "horizontal") != 0 || 
+                strcmp(direction, "diagonal") != 0){
+                printf("\nInvalid direction. Please, type 'vertical', 'horizontal' or 'diagonal'.\n");
+            }
+            else
+                break;
+        }
+        
+
+        while (1){
+            printf("\nFirst coordinate:\n");
+            printf("Column (A - J): ");
+            scanf(" %c", &column1);
+            if ((column1 < 'A' || column1 > 'J') && (column1 < 'a' || column1 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line1);
+
+            if (line1 < 1 || line1 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
+        
+        while (1){
+            printf("\nSecond coordinate:\n");
+            printf("Column (A - J): ");
+            scanf(" %c", &column2);
+            if ((column2 < 'A' || column2 > 'J') && (column2 < 'a' || column2 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line2);
+
+            if (line2 < 1 || line2 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
+
+        if (positionShips(4, direction, column1, line1, column2, line2) == 1){
+            break;
+        }
+        else{
+            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+        }
+
+    } while (1);
+
+
+    do
+    {
         getchar();
+        printf("\n");
+        printf("Where would you like to position your Carrier (5 squares)?\n");
 
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line1);
-        getchar();
+        while (1){
+            printf("Direction (Horizontal, Vertical or Diagonal): ");
+            scanf(" %19[^\n]", direction); // Permite entrada com espaços e limita o buffer
 
-        printf("\nSecond coordinate:\n");
-        printf("Column (A - J): ");
-        scanf("%c", &column2);
-        getchar();
+            toLowerCase(direction); // Converte para minúsculas
 
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line2);
+            if (strcmp(direction, "vertical") != 0 || 
+                strcmp(direction, "horizontal") != 0 || 
+                strcmp(direction, "diagonal") != 0){
+                printf("\nInvalid direction. Please, type 'vertical', 'horizontal' or 'diagonal'.\n");
+            }
+            else
+                break;
+        }
+        
 
-        positionShips(3, direction, column1, line1, column2, line2);
+        while (1){
+            printf("\nFirst coordinate:\n");
+            printf("Column (A - J): ");
+            scanf(" %c", &column1);
+            if ((column1 < 'A' || column1 > 'J') && (column1 < 'a' || column1 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line1);
 
-    getchar();
-    printf("\n");
-    printf("Where would you like to position your Battleship (4 squares)?\n");
+            if (line1 < 1 || line1 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
+        
+        while (1){
+            printf("\nSecond coordinate:\n");
+            printf("Column (A - J): ");
+            scanf(" %c", &column2);
+            if ((column2 < 'A' || column2 > 'J') && (column2 < 'a' || column2 > 'j')){
+                printf("\nInvalid column. Please, type A, B, C, D, E, F, G, H, I or J.\n");
+            }
+            else
+                break;
+        }
+        
+        while(1){
+            printf("\nLine (1 - 10): ");
+            scanf(" %d", &line2);
 
-        printf("Direction (Horizontal, Vertical or Diagonal): ");
-        scanf("%s", direction);
-        getchar();
+            if (line2 < 1 || line2 > 10){
+                printf("\nInvalid line. Please, type 1, 2, 3, 4, 5, 6, 7, 8, 9 or 10\n");
+            }
+            else
+                break;
+        }
 
-        printf("\nFirst coordinate:\n");
-        printf("Column (A - J): ");
-        scanf("%c", &column1);
-        getchar();
+        if (positionShips(5, direction, column1, line1, column2, line2) == 1){
+            break;
+        }
+        else{
+            printf("\nInvalid places. They have alredy been ocupied by other ships. Please, insert data again.\n");
+        }
 
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line1);
-        getchar();
-
-        printf("\nSecond coordinate:\n");
-        printf("Column (A - J): ");
-        scanf("%c", &column2);
-        getchar();
-
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line2);
-
-        positionShips(4, direction, column1, line1, column2, line2);
-
-    getchar();
-    printf("\n");
-    printf("Where would you like to position your Carrier (5 squares)?\n");
-
-        printf("Direction (Horizontal, Vertical or Diagonal): ");
-        scanf("%s", direction);
-        getchar();
-
-        printf("\nFirst coordinate:\n");
-        printf("Column (A - J): ");
-        scanf("%c", &column1);
-        getchar();
-
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line1);
-        getchar();
-
-        printf("\nSecond coordinate:\n");
-        printf("Column (A - J): ");
-        scanf("%c", &column2);
-        getchar();
-
-        printf("\nLine (1 - 10): ");
-        scanf("%d", &line2);
-
-        positionShips(5, direction, column1, line1, column2, line2);
-
+    } while (1);
 }
 
 int main() {

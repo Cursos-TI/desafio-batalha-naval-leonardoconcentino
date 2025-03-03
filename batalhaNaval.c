@@ -1,40 +1,204 @@
 #include <stdio.h>
+#include <string.h>
 
-// Desafio Batalha Naval - MateCheck
-// Este código inicial serve como base para o desenvolvimento do sistema de Batalha Naval.
-// Siga os comentários para implementar cada parte do desafio.
+int board [10][10] = {
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+};
+
+void printBoard(){
+
+    printf("   A B C D E F G H I J\n");
+
+    for (int i = 0; i < 10; i++)
+    {
+        if(i < 9)
+            printf(" %d ", i+1);
+        else
+            printf("%d ", i+1);
+
+        for (int j = 0; j < 10; j++)
+        {
+            printf("%d ", board[i][j]);
+        }
+        printf("\n");
+    }
+    
+
+}
+
+int transformColumn(char column){
+
+    switch (column)
+    {
+    case 'a':
+        return 0;
+
+    case 'b':
+        return 1;
+
+    case 'c':
+        return 2;
+
+    case 'd':
+        return 3;
+
+    case 'e':
+        return 4;
+
+    case 'f':
+        return 5;
+    
+    case 'g':
+        return 6;
+
+    case 'h':
+        return 7;
+
+    case 'i':
+        return 8;
+
+    case 'j':
+        return 9;
+        break;
+    
+    default:
+        break;
+    }
+
+}
+
+void positionShips(int size, char direction [10], char column1, int line1, char column2, int line2){
+
+    int numColumn1 = transformColumn(column1);
+    int numColumn2 = transformColumn(column2);
+    line1--;
+    line2--;
+
+    switch (size)
+    {
+    case 2:
+        
+        board [line1][numColumn1] = size;
+        board [line2][numColumn2] = size;
+        
+        break;
+
+    case 3:
+        
+        if (strcmp(direction, "vertical") == 0)
+        {
+            for (int i = 0; i < size; i++)
+            {
+                board [line1+i][numColumn1] = size;
+            }
+            
+        }
+        else 
+            if (strcmp(direction, "horizontal") == 0)
+            {
+                for (int i = 0; i < size; i++)
+                {
+                    board [line1][numColumn1+i] = size;
+                }
+            }
+                else
+                {
+                    for (int i = 0; i < size; i++)
+                    {
+                        board [line1+i][numColumn1+i] = size;
+                    }
+                }
+        
+        break;
+    
+    default:
+        break;
+    }
+
+}
+
+void collectShips(){
+
+    int line1 = 0;
+    char column1;
+    int line2 = 0;
+    char column2;
+    char direction[10];
+
+    printf("\n");
+    printf("Where would you like to position your Patrol Boat (2 squares)?\n");
+
+        printf("\nFirst coordinate:\n");
+        printf("Column (A - J): ");
+        scanf("%c", &column1);
+        getchar();
+
+        printf("\nLine (1 - 10): ");
+        scanf("%d", &line1);
+        getchar();
+
+        printf("\nSecond coordinate:\n");
+        printf("Column (A - J): ");
+        scanf("%c", &column2);
+        getchar();
+
+        printf("\nLine (1 - 10): ");
+        scanf("%d", &line2);
+
+        positionShips(2, direction, column1, line1, column2, line2);
+    
+    getchar();
+    printf("\n");
+    printf("Where would you like to position your Submarine (3 squares)?\n");
+
+        printf("Direction (Horizontal, Vertical or Diagonal): ");
+        scanf("%s", direction);
+        getchar();
+
+        printf("\nFirst coordinate:\n");
+        printf("Column (A - J): ");
+        scanf("%c", &column1);
+        getchar();
+
+        printf("\nLine (1 - 10): ");
+        scanf("%d", &line1);
+        getchar();
+
+        printf("\nSecond coordinate:\n");
+        printf("Column (A - J): ");
+        scanf("%c", &column2);
+        getchar();
+
+        printf("\nLine (1 - 10): ");
+        scanf("%d", &line2);
+
+        positionShips(3, direction, column1, line1, column2, line2);
+
+    printf("\n");
+    printf("Where would you like to position your Battleship (4 squares)?\n");
+
+    printf("\n");
+    printf("Where would you like to position your Carrier (5 squares)?\n");
+    
+
+}
 
 int main() {
-    // Nível Novato - Posicionamento dos Navios
-    // Sugestão: Declare uma matriz bidimensional para representar o tabuleiro (Ex: int tabuleiro[5][5];).
-    // Sugestão: Posicione dois navios no tabuleiro, um verticalmente e outro horizontalmente.
-    // Sugestão: Utilize `printf` para exibir as coordenadas de cada parte dos navios.
 
-    // Nível Aventureiro - Expansão do Tabuleiro e Posicionamento Diagonal
-    // Sugestão: Expanda o tabuleiro para uma matriz 10x10.
-    // Sugestão: Posicione quatro navios no tabuleiro, incluindo dois na diagonal.
-    // Sugestão: Exiba o tabuleiro completo no console, mostrando 0 para posições vazias e 3 para posições ocupadas.
-
-    // Nível Mestre - Habilidades Especiais com Matrizes
-    // Sugestão: Crie matrizes para representar habilidades especiais como cone, cruz, e octaedro.
-    // Sugestão: Utilize estruturas de repetição aninhadas para preencher as áreas afetadas por essas habilidades no tabuleiro.
-    // Sugestão: Exiba o tabuleiro com as áreas afetadas, utilizando 0 para áreas não afetadas e 1 para áreas atingidas.
-
-    // Exemplos de exibição das habilidades:
-    // Exemplo para habilidade em cone:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 1 1 1 1 1
+    printBoard();
     
-    // Exemplo para habilidade em octaedro:
-    // 0 0 1 0 0
-    // 0 1 1 1 0
-    // 0 0 1 0 0
+    collectShips();
 
-    // Exemplo para habilidade em cruz:
-    // 0 0 1 0 0
-    // 1 1 1 1 1
-    // 0 0 1 0 0
-
+    printBoard();
+    
     return 0;
 }
